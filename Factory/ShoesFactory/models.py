@@ -99,3 +99,61 @@ class Counterparties(models.Model):
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
+
+
+class Balance(models.Model):
+    balance = models.IntegerField(verbose_name="Остаток средств:")
+    date = models.DateField(verbose_name="Дата:")
+
+    class Meta:
+        verbose_name = "Остаток:"
+        verbose_name_plural = "Остатки:"
+
+    def __str__(self):
+        return f"{self.balance} - {self.date}"
+
+
+class DebtOn(models.Model):
+    debt_on = models.IntegerField(verbose_name="Задолжность:")
+    date = models.DateField(verbose_name="Дата:")
+
+    class Meta:
+        verbose_name = "Задолжность:"
+        verbose_name_plural = "Задолжности:"
+
+    def __str__(self):
+        return f"{self.debt_on} - {self.date}"
+
+
+class ZPeople(models.Model):
+    job_title = models.CharField(verbose_name="Должность:", max_length=100)
+    working_days = models.IntegerField(verbose_name="Раб.Дней:", default=26)
+    actually_worked_out = models.IntegerField(
+        verbose_name="Факт.отработано:", default=0)
+    salary_for = models.IntegerField(verbose_name="Оклад для СФ:", default=0)
+    actualy_salary = models.IntegerField(verbose_name="Факт.оклад:", default=0)
+    social_fund = models.IntegerField(verbose_name="Соц.Фонд:", default=1050)
+    em_Soc_fund = models.IntegerField(
+        verbose_name="Работодатель Соц.фонд 17,25%:", default=1035)
+    salary_on_accruals = models.IntegerField(
+        verbose_name="Оклад по начислениям:", default=0)
+    piecework_machine = models.IntegerField(
+        verbose_name="сдельная станок ПУ:", default=0)
+    piece_EVA = models.IntegerField(verbose_name="Сдельная ЭВА:", default=0)
+    accumulated = models.IntegerField(verbose_name="Начислено:", default=0)
+    premium = models.IntegerField(verbose_name="Премия:", default=0)
+    prepaid_expense = models.IntegerField(verbose_name="Аванс:", default=0)
+    Sale_of_goods = models.IntegerField(
+        verbose_name="Продажа товаров:", default=0)
+    pay = models.IntegerField(verbose_name="Выплата:")
+
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    balance = models.ForeignKey(Balance, on_delete=models.CASCADE)
+    debt_on = models.ForeignKey(DebtOn, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Обшая Зарплата:"
+        verbose_name_plural = "Общие Зарплаты:"
+
+    def __str__(self):
+        return self.job_title
