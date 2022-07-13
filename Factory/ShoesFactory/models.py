@@ -1,4 +1,3 @@
-
 from django.db import models
 
 
@@ -52,15 +51,13 @@ class ProductModel(models.Model):
         return self.type_pr
 
 
-# fullname  = models.CharField(verbose_name="ФИО - Сотрудника:", max_length=200)
-
 class Employee(models.Model):
-    last_name = models.CharField(verbose_name="Фамилия:", max_length=150)
-    first_name = models.CharField(verbose_name="Имя:", max_length=150)
+    full_name = models.CharField(verbose_name="ФИО", max_length=150)
     phone = models.CharField(max_length=50,
                              verbose_name="Контактный номер сотрудника:")
     date_register = models.DateTimeField(
         auto_now_add=True, verbose_name="Дата регистрации:")
+    job_title = models.CharField(verbose_name="Должность:", max_length=100)
 
     class Meta:
         verbose_name = "Сотрудник:"
@@ -68,7 +65,7 @@ class Employee(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f"{self.last_name}, {self.first_name}"
+        return self.full_name
 
     # def get_name(self):
     #     return '{0} {1}'.format(self.first_name, self.last_name)
@@ -126,7 +123,6 @@ class DebtOn(models.Model):
 
 
 class ZPeople(models.Model):
-    job_title = models.CharField(verbose_name="Должность:", max_length=100)
     working_days = models.IntegerField(verbose_name="Раб.Дней:", default=26)
     actually_worked_out = models.IntegerField(
         verbose_name="Факт.отработано:", default=0)
@@ -147,13 +143,26 @@ class ZPeople(models.Model):
         verbose_name="Продажа товаров:", default=0)
     pay = models.IntegerField(verbose_name="Выплата:")
 
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    balance = models.ForeignKey(Balance, on_delete=models.CASCADE)
-    debt_on = models.ForeignKey(DebtOn, on_delete=models.CASCADE)
+    employee = models.ManyToManyField(Employee, verbose_name="Сотрудник:")
+    balance = models.ForeignKey(Balance, verbose_name="Остаток:", on_delete=models.CASCADE)
+    debt_on = models.ForeignKey(DebtOn,verbose_name="Задолжность:",  on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Обшая Зарплата:"
         verbose_name_plural = "Общие Зарплаты:"
 
-    def __str__(self):
-        return self.job_title
+    def __int__(self):
+        return self.working_days
+
+class Production(models.Model):
+    kol_models = models.IntegerField(verbose_name="Модель:", default=0)
+    typy_models = models.CharField(verbose_name="Вид моделей:", max_length=50)
+    package = models.IntegerField(verbose_name="Упаковка:", default=0)
+    number_pairs = models.IntegerField(verbose_name="Количество пар:", default=0)
+    in_bags = models.IntegerField(verbose_name="В мешках:", default=0)
+    workers = models.IntegerField(verbose_name="Рабочие:", default=0)
+    machine = models.IntegerField(verbose_name="Станок:", default=0)
+    SAI = models.IntegerField(verbose_name="САЯ", default=0)
+    employye = models.ManyToManyField(Employee)
+
+
